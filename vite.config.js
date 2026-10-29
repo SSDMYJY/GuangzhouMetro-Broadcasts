@@ -118,16 +118,48 @@ const buildLlmsTxt = (siteUrl) =>
 		''
 	].join('\n')
 
+// H5 使用 history 路由。Cloudflare Pages 的 _redirects 会无条件生效（即便命中静态资源），
+// 因此只对已知页面路由做 200 改写，避免影响 /assets、/sitemap.xml 等静态文件
+const buildRedirects = () =>
+	[
+		...ROUTES.filter((route) => route.path !== '/').flatMap((route) => [
+			`${route.path} /index.html 200`,
+			`${route.path}/ /index.html 200`
+		]),
+		''
+	].join('\n')
+
+// 为生成文件声明 Content-Type，并让入口 HTML 走协商缓存
+const buildHeaders = () =>
+	[
+		'/robots.txt',
+		'  Content-Type: text/plain; charset=utf-8',
+		'',
+		'/sitemap.xml',
+		'  Content-Type: application/xml; charset=utf-8',
+		'',
+		'/llms.txt',
+		'  Content-Type: text/plain; charset=utf-8',
+		'',
+		'/index.html',
+		'  Cache-Control: public, max-age=0, must-revalidate',
+		''
+	].join('\n')
+
 const seoFilesPlugin = (siteUrl) => {
 	const files = {
 		'robots.txt': buildRobotsTxt(siteUrl),
 		'sitemap.xml': buildSitemapXml(siteUrl),
-		'llms.txt': buildLlmsTxt(siteUrl)
+		'llms.txt': buildLlmsTxt(siteUrl),
+		'_redirects': buildRedirects(),
+		'_headers': buildHeaders()
 	}
 	const contentTypes = {
 		'robots.txt': 'text/plain; charset=utf-8',
 		'sitemap.xml': 'application/xml; charset=utf-8',
-		'llms.txt': 'text/plain; charset=utf-8'
+		'llms.txt': 'text/plain; charset=utf-8',
+		'_redirects': 'text/plain; charset=utf-8',
+		'_headers': 'text/plain; charset=utf-8'
 	}
 
 	return {
