@@ -72,7 +72,7 @@
         "router" : {
             "mode" : "history"
         },
-        "title" : "广州/佛山地铁报站模拟器",
+        "title" : "广州/佛山地铁报站模拟器 - 广佛地铁线路报站音在线试听",
         "optimization" : {
             "treeShaking" : {
                 "enable" : true
