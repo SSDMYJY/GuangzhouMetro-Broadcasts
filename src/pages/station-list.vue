@@ -1,5 +1,34 @@
 <template>
     <view>
+        <scroll-view
+            v-if="stationRes.length"
+            class="line-map"
+            scroll-x
+            :show-scrollbar="false">
+            <view class="line-map__track">
+                <view
+                    v-for="(item, index) in stationRes"
+                    :key="item.title"
+                    class="line-map__station"
+                    :class="{
+                        'line-map__station--active': index === 0,
+                    }">
+                    <view class="line-map__labels">
+                        <text class="line-map__title">{{ item.title }}</text>
+                        <text class="line-map__subtitle">
+                            {{ item.subtitle }}
+                        </text>
+                    </view>
+                    <view class="line-map__rail">
+                        <view
+                            v-if="index < stationRes.length - 1"
+                            class="line-map__connector" />
+                        <view class="line-map__dot" />
+                    </view>
+                </view>
+            </view>
+        </scroll-view>
+
         <uni-group
             v-for="item in stationRes"
             :key="item.title"
@@ -92,6 +121,102 @@ onUnmounted(() => {
 </script>
 
 <style>
+.line-map {
+    box-sizing: border-box;
+    width: 100%;
+    margin-bottom: 20rpx;
+    padding: 28rpx 0 22rpx;
+    background-color: #ffffff;
+    border-bottom: 1rpx solid #e7ebf0;
+    white-space: nowrap;
+}
+
+.line-map__track {
+    display: inline-flex;
+    box-sizing: border-box;
+    min-width: 100%;
+    padding: 0 32rpx;
+}
+
+.line-map__station {
+    flex: 0 0 240rpx;
+    width: 240rpx;
+    color: #2c405a;
+    text-align: center;
+}
+
+.line-map__labels {
+    display: flex;
+    height: 126rpx;
+    padding: 0 12rpx 14rpx;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    white-space: normal;
+}
+
+.line-map__title,
+.line-map__subtitle {
+    display: block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.line-map__title {
+    font-size: 28rpx;
+    font-weight: 600;
+    line-height: 38rpx;
+}
+
+.line-map__subtitle {
+    margin-top: 4rpx;
+    color: #697386;
+    font-size: 22rpx;
+    line-height: 28rpx;
+}
+
+.line-map__rail {
+    position: relative;
+    display: flex;
+    height: 32rpx;
+    align-items: center;
+    justify-content: center;
+}
+
+.line-map__connector {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 0;
+    width: 100%;
+    height: 6rpx;
+    background-color: #cfd6df;
+    transform: translateY(-50%);
+}
+
+.line-map__dot {
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    width: 28rpx;
+    height: 28rpx;
+    background-color: #ffffff;
+    border: 6rpx solid #8692a6;
+    border-radius: 50%;
+}
+
+.line-map__station--active .line-map__title,
+.line-map__station--active .line-map__subtitle {
+    color: #007aff;
+}
+
+.line-map__station--active .line-map__dot {
+    background-color: #007aff;
+    border-color: #007aff;
+    box-shadow: 0 0 0 8rpx #e5f1ff;
+}
+
 .station-content {
     display: flex;
     flex-direction: column;
